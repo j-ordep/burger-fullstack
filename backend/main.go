@@ -1,9 +1,9 @@
 package main
 
 import (
-	"backend-super-burger/Handler"
 	"backend-super-burger/config"
 	"backend-super-burger/db"
+	"backend-super-burger/handler"
 	"backend-super-burger/repository"
 	"backend-super-burger/service"
 	"log"
@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	db, err := db.OpenConnection()
 	if err != nil {
 		log.Fatal("Erro ao conectar no banco:", err)
@@ -32,13 +32,16 @@ func main() {
 	statusService := service.NewStatusService(statusRepo)
 	statusHandler := handler.NewStatusHandler(statusService)
 
-
 	e := echo.New()
 
 	e.Use(middleware.Logger())
-    e.Use(middleware.Recover())
-    e.Use(middleware.CORS())
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 
 	e.GET("/ingredientes", ingredientesHandler.GetIngredientes)
 	e.GET("/status", statusHandler.GetStatus)
+
+
+	port := ":" + config.GetServerPort()
+	e.Logger.Fatal(e.Start(port))
 }

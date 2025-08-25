@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: bitnami/postgresql
+    container_name: burger-backend
+    environment:
+      POSTGRES_DB: burger
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    restart: always

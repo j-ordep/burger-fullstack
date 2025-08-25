@@ -1,18 +1,18 @@
 package domain
 
 type Pao struct {
-	Id int	
-	Tipo string
+	Id int `json:"id"`
+	Tipo string `json:"tipo"`
 }
 
 type Carne struct {
-	Id int	
-	Tipo string
+	Id int `json:"id"`
+	Tipo string `json:"tipo"`
 }
 
 type Opcional struct {
-	Id int	
-	Tipo string
+	Id int `json:"id"`
+	Tipo string `json:"tipo"`
 }
 
 type IngredientesResponse struct {

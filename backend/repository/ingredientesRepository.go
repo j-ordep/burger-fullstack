@@ -13,7 +13,6 @@ func NewIngredientesRepository(db *sql.DB) *IngredientesRepository {
 	return &IngredientesRepository{db:db}
 }
 
-
 func (r *IngredientesRepository) GetPaes() ([]*domain.Pao, error) {
 	var paes []*domain.Pao
 
@@ -76,4 +75,3 @@ func (r *IngredientesRepository) GetOpcionais() ([]*domain.Opcional, error) {
 
 	return opcionais, nil
 }
-

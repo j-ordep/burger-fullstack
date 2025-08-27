@@ -19,21 +19,18 @@ CREATE TABLE opcionais (
     tipo VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE burgers (
+CREATE TABLE pedidos (
     id SERIAL PRIMARY KEY,
-    nome_cliente TEXT NOT NULL,
-    pao_id INT REFERENCES paes(id),
-    carne_id INT REFERENCES carnes(id),
-    status_id INT REFERENCES status(id),
-    created_at TIMESTAMP DEFAULT NOW()
+    nome TEXT NOT NULL,
+    pao TEXT NOT NULL,
+    carne TEXT NOT NULL,
+    status_id INT NOT NULL REFERENCES status(id)
 );
 
 CREATE TABLE burger_opcionais (
-    burger_id INTEGER,
-    opcional_id INTEGER,
-    PRIMARY KEY (burger_id, opcional_id),
-    FOREIGN KEY (burger_id) REFERENCES burgers(id) ON DELETE CASCADE,
-    FOREIGN KEY (opcional_id) REFERENCES opcionais(id)
+    id SERIAL PRIMARY KEY,
+    pedidos_id INTEGER REFERENCES pedidos(id) ON DELETE CASCADE,
+    opcional TEXT NOT NULL
 );
 
 INSERT INTO paes (id, tipo) VALUES
@@ -55,3 +52,8 @@ INSERT INTO opcionais (id, tipo) VALUES
 (4, 'Tomate'),
 (5, 'Cebola roxa'),
 (6, 'Pepino');
+
+INSERT INTO status (id, tipo) VALUES
+(1, 'Solicitado'),
+(2, 'Em produção'),
+(3, 'Finalizado');

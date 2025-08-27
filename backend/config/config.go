@@ -28,17 +28,17 @@ func init() {
 }
 
 func Load() error {
-	viper.SetConfigName("config")
+	viper.SetConfigName("config") // procura o arquivo config.toml 
 	viper.SetConfigType("toml")
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok { // se o erro não for ConfigFileNotFoundError
 			return err
 		}
 	}
 
-	cfg = new(config) // &config{}]
+	cfg = new(config) // &config{}
 
 	cfg.API = APIConfig {
 		Port: viper.GetString("api.port"),

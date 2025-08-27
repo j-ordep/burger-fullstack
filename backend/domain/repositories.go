@@ -9,3 +9,7 @@ type IngredientesRepository interface {
 type StatusRepository interface {
 	GetStatus() ([]*Status, error)
 }
+
+type BurgerRepository interface {
+	SaveBurger(burger *Burger) error
+}

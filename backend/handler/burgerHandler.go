@@ -90,6 +90,6 @@ func (h *BurgerHandler) DeleteBurger(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": fmt.Sprintf("Pedido com id %s deletado com sucesso", id),
+		"message": fmt.Sprintf("Pedido com id %d deletado com sucesso", id),
 	})
 }

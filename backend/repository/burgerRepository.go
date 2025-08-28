@@ -9,8 +9,8 @@ type BurgerRepository struct {
 	db *sql.DB
 }
 
-func NewBurgerRepository(db *sql.DB) *BurgerRepository{
-	return &BurgerRepository{db:db}
+func NewBurgerRepository(db *sql.DB) *BurgerRepository {
+	return &BurgerRepository{db: db}
 }
 
 func (r *BurgerRepository) SaveBurger(burger *domain.Burger) (int, error) {
@@ -26,7 +26,7 @@ func (r *BurgerRepository) SaveBurger(burger *domain.Burger) (int, error) {
 
 	for _, opcional := range burger.Opcionais {
 		_, err = r.db.Exec(`
-			INSERT INTO burger_opcionais (burger_id, opcional) VALUES ($1, $2)`,
+			INSERT INTO burger_opcionais (pedidos_id, opcional) VALUES ($1, $2)`,
 			id, opcional,
 		)
 		if err != nil {
@@ -35,4 +35,107 @@ func (r *BurgerRepository) SaveBurger(burger *domain.Burger) (int, error) {
 	}
 
 	return id, nil
+}
+
+func (r *BurgerRepository) GetBurgers() ([]*domain.Burger, error) {
+	rows, err := r.db.Query(`
+		SELECT p.id, p.nome, p.pao, p.carne, p.status_id, s.tipo
+		FROM pedidos p
+		INNER JOIN status s ON p.status_id = s.id
+		ORDER BY p.id
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	burgersMap := make(map[int]*domain.Burger)
+	statusMap := make(map[int]string)
+
+	for rows.Next() {
+		var burger domain.Burger
+		var statusTipo string
+
+		err := rows.Scan(&burger.Id, &burger.Nome, &burger.Pao, &burger.Carne, &burger.StatusId, &statusTipo)
+		if err != nil {
+			return nil, err
+		}
+
+		burger.Opcionais = []string{} // Inicializa slice vazio para opcionais
+		burgersMap[burger.Id] = &burger
+		statusMap[burger.StatusId] = statusTipo
+	}
+
+	opcionaisRows, err := r.db.Query(`
+		SELECT pedidos_id, opcional
+		FROM burger_opcionais
+		ORDER BY pedidos_id
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer opcionaisRows.Close()
+
+	for opcionaisRows.Next() {
+		var pedidoId int
+		var opcional string
+
+		err := opcionaisRows.Scan(&pedidoId, &opcional)
+		if err != nil {
+			return nil, err
+		}
+
+		if burger, ok := burgersMap[pedidoId]; ok {
+			burger.Opcionais = append(burger.Opcionais, opcional)
+		}
+	}
+
+	// Converte o mapa para um slice para retornar
+	var burgers []*domain.Burger
+
+	for _, burger := range burgersMap {
+		burgers = append(burgers, burger)
+	}
+
+	return burgers, nil
+}
+
+
+func (r *BurgerRepository) DeleteBurger(id int) error {
+
+	_, err := r.db.Exec("DELETE FROM pedidos WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+
+	// Agora checa se a tabela ficou vazia
+	var count int
+	err = r.db.QueryRow("SELECT COUNT(*) FROM pedidos").Scan(&count)
+	if err != nil {
+		return err
+	}
+
+	// Se não tem mais pedidos, reseta a sequence
+	if count == 0 {
+		_, err = r.db.Exec("ALTER SEQUENCE pedidos_id_seq RESTART WITH 1")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// funções auxiliares
+
+func (r *BurgerRepository) GetStatusIdByName(statusName string) (int, error) {
+	var statusId int
+	err := r.db.QueryRow("SELECT id FROM status WHERE tipo = $1", statusName).Scan(&statusId)
+	return statusId, err
+}
+
+func (r *BurgerRepository) GetStatusTypeById(statusId int) (string, error) {
+	var statusType string
+	err := r.db.QueryRow("SELECT tipo FROM status WHERE id = $1", statusId).Scan(&statusType)
+	return statusType, err
 }

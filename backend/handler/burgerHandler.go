@@ -73,6 +73,41 @@ func (h *BurgerHandler) GetBurgers(c echo.Context) error {
 	return c.JSON(http.StatusOK, outputDTOs)
 }
 
+func (h *BurgerHandler) UpdateStatusBurger(c echo.Context) error {
+	idParam := c.Param("id")
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "ID inválido",
+		})
+	}
+
+	var body struct {
+		Status string `json:"status"`
+	}
+
+	err = c.Bind(&body)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "JSON inválido",
+		})
+	}
+
+	newDomainBurger, err := h.service.UpdateStatusBurger(id, body.Status)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]string {
+			"error": "não foi possível atualizar o pedido",
+		})
+	}
+
+	newStatus, err := h.service.GetStatusTypeById(newDomainBurger.StatusId)
+
+	output := dto.FromDomain(newDomainBurger, newStatus)
+
+	return c.JSON(http.StatusOK, output)
+}
+
 func (h *BurgerHandler) DeleteBurger(c echo.Context) error {
 	idParam := c.Param("id")
 

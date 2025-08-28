@@ -29,6 +29,28 @@ func (s *BurgerService) GetBurgers() ([]*domain.Burger, error) {
 	return burgers, nil
 }
 
+func (s *BurgerService) UpdateStatusBurger(id int, status string) (*domain.Burger, error) {
+
+	burger, err := s.repo.GetBurgerById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	statusId, err := s.repo.GetStatusIdByName(status)
+	if err != nil {
+		return nil, err
+	}
+
+	burger.StatusId = statusId
+
+	err = s.repo.UpdateStatusBurger(id, burger.StatusId)
+	if err != nil {
+		return nil, err
+	}
+
+	return burger, nil
+}
+
 func (s *BurgerService) DeleteBurgerById(id int) (error) {
 	err := s.repo.DeleteBurger(id)
 	if err != nil {
@@ -36,6 +58,15 @@ func (s *BurgerService) DeleteBurgerById(id int) (error) {
 	}
 
 	return nil
+}
+
+func (s *BurgerService) GetBurgerById(id int) (*domain.Burger, error) {
+	burger, err := s.repo.GetBurgerById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return burger, nil
 }
 
 // funções auxiliares

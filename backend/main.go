@@ -32,6 +32,10 @@ func main() {
 	statusService := service.NewStatusService(statusRepo)
 	statusHandler := handler.NewStatusHandler(statusService)
 
+	burgerRepo := repository.NewBurgerRepository(db)
+	burgerService := service.NewBurgerService(burgerRepo)
+	burgerHandler := handler.NewBurgerHandler(burgerService)
+
 	e := echo.New()
 
 	e.Use(middleware.Logger())
@@ -39,8 +43,12 @@ func main() {
 	e.Use(middleware.CORS())
 
 	e.GET("/ingredientes", ingredientesHandler.GetIngredientes)
+
 	e.GET("/status", statusHandler.GetStatus)
 
+	e.GET("/burgers", burgerHandler.GetBurgers)
+	e.POST("/burgers", burgerHandler.SaveBurger)
+	e.DELETE("/burgers/:id", burgerHandler.DeleteBurger)
 
 	port := ":" + config.GetServerPort()
 	e.Logger.Fatal(e.Start(port))

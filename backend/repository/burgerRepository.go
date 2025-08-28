@@ -100,24 +100,57 @@ func (r *BurgerRepository) GetBurgers() ([]*domain.Burger, error) {
 	return burgers, nil
 }
 
+func (r *BurgerRepository) GetBurgerById(id int) (*domain.Burger, error) {
+
+	row := r.db.QueryRow(`SELECT id, nome, pao, carne, status_id FROM pedidos WHERE id = $1`, id)
+
+	var burger domain.Burger
+	err := row.Scan(&burger.Id, &burger.Nome, &burger.Pao, &burger.Carne, &burger.StatusId)
+	if err != nil {
+		return nil, err
+	}
+
+	burger.Opcionais = []string{}
+
+	opcRows, err := r.db.Query("SELECT opcional FROM burger_opcionais WHERE pedidos_id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+	defer opcRows.Close()
+
+	for opcRows.Next() {
+		var opcional string
+		if err := opcRows.Scan(&opcional); err != nil {
+			return nil, err
+		}
+		burger.Opcionais = append(burger.Opcionais, opcional)
+	}
+
+	return &burger, nil
+}
+
+func (r *BurgerRepository) UpdateStatusBurger(id int, statusId int) error {
+	_, err := r.db.Exec("UPDATE pedidos SET status_id = $1 WHERE id = $2", statusId, id)
+	return err
+}
 
 func (r *BurgerRepository) DeleteBurger(id int) error {
 
-	_, err := r.db.Exec("DELETE FROM pedidos WHERE id = $1", id)
+	_, err := r.db.Exec(`DELETE FROM pedidos WHERE id = $1`, id)
 	if err != nil {
 		return err
 	}
 
 	// Agora checa se a tabela ficou vazia
 	var count int
-	err = r.db.QueryRow("SELECT COUNT(*) FROM pedidos").Scan(&count)
+	err = r.db.QueryRow(`SELECT COUNT(*) FROM pedidos`).Scan(&count)
 	if err != nil {
 		return err
 	}
 
 	// Se não tem mais pedidos, reseta a sequence
 	if count == 0 {
-		_, err = r.db.Exec("ALTER SEQUENCE pedidos_id_seq RESTART WITH 1")
+		_, err = r.db.Exec(`ALTER SEQUENCE pedidos_id_seq RESTART WITH 1`)
 		if err != nil {
 			return err
 		}
@@ -130,12 +163,12 @@ func (r *BurgerRepository) DeleteBurger(id int) error {
 
 func (r *BurgerRepository) GetStatusIdByName(statusName string) (int, error) {
 	var statusId int
-	err := r.db.QueryRow("SELECT id FROM status WHERE tipo = $1", statusName).Scan(&statusId)
+	err := r.db.QueryRow(`SELECT id FROM status WHERE tipo = $1`, statusName).Scan(&statusId)
 	return statusId, err
 }
 
 func (r *BurgerRepository) GetStatusTypeById(statusId int) (string, error) {
 	var statusType string
-	err := r.db.QueryRow("SELECT tipo FROM status WHERE id = $1", statusId).Scan(&statusType)
+	err := r.db.QueryRow(`SELECT tipo FROM status WHERE id = $1`, statusId).Scan(&statusType)
 	return statusType, err
 }

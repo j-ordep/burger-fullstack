@@ -11,5 +11,9 @@ type StatusRepository interface {
 }
 
 type BurgerRepository interface {
-	SaveBurger(burger *Burger) error
+	SaveBurger(burger *Burger) (int, error)
+	GetStatusIdByName(statusName string) (int, error)
+	GetBurgers() ([]*Burger, error)
+	GetStatusTypeById(statusId int) (string, error)
+	DeleteBurger(id int) error 
 }

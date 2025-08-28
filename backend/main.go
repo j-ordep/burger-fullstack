@@ -48,6 +48,7 @@ func main() {
 
 	e.GET("/burgers", burgerHandler.GetBurgers)
 	e.POST("/burgers", burgerHandler.SaveBurger)
+	e.PATCH("/burgers/:id", burgerHandler.UpdateStatusBurger)
 	e.DELETE("/burgers/:id", burgerHandler.DeleteBurger)
 
 	port := ":" + config.GetServerPort()

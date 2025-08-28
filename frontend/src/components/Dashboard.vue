@@ -94,7 +94,7 @@ import Message from './Message.vue'
 
         const dataJson = JSON.stringify({status: option});
 
-        const req = await fetch(`http://localhost:3000/burgers/${id}`, {
+        const req = await fetch(`http://localhost:9000/burgers/${id}`, {
           method: "PATCH",
           headers: { "Content-Type" : "application/json" },
           body: dataJson
@@ -105,7 +105,8 @@ import Message from './Message.vue'
         this.msg = `Pedido Nº ${res.id} atualizado para ${res.status}`
         setTimeout(() => this.msg="", 3000);
 
-        console.log(res)
+        console.log("Update status datajson" + dataJson)
+        console.log("Update res" + res)
 
       }
     },

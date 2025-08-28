@@ -71,7 +71,7 @@ export default {
     async getIngredientes() {
 
       // "GET busca no backend"
-      const req = await fetch("http://localhost:3000/ingredientes")
+      const req = await fetch("http://localhost:9000/ingredientes")
       const data = await req.json() // JSON -> obj JS
 
       this.paes = data.paes
@@ -94,7 +94,9 @@ export default {
       // "envia para o backend"
       const dataJson = JSON.stringify(data) // obj JS -> string JSON
 
-      const req = await fetch("http://localhost:3000/burgers", {
+      console.log("datajson:" + dataJson)
+
+      const req = await fetch("http://localhost:9000/burgers", {
         method: "POST",
         headers: { "content-Type": "application/json" },
         body: dataJson
@@ -102,9 +104,7 @@ export default {
 
       const res = await req.json()
 
-      console.log(res)
-
-      this.msg = `Pedido Nº ${res.id} realizado com sucesso`
+      this.msg = `Pedido Nº ${res} realizado com sucesso`
       setTimeout(() => this.msg="", 3000);
 
       this.nome = ""

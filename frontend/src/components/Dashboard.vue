@@ -56,7 +56,7 @@ import Message from './Message.vue'
     },
     methods: {
       async getPedidos() {
-        const req = await fetch('http://localhost:3000/burgers')
+        const req = await fetch('http://localhost:9000/burgers')
 
         const data = await req.json()
 
@@ -67,7 +67,7 @@ import Message from './Message.vue'
       },
       async getStatus() {
 
-        const req = await fetch('http://localhost:3000/status')
+        const req = await fetch('http://localhost:9000/status')
 
         const data = await req.json()
 
@@ -76,7 +76,7 @@ import Message from './Message.vue'
       },
       async deleteBurger(id) {
 
-        const req = await fetch(`http://localhost:3000/burgers/${id}`, {
+        const req = await fetch(`http://localhost:9000/burgers/${id}`, {
           method: "DELETE"
         });
 

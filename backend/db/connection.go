@@ -25,7 +25,6 @@ func OpenConnection() (*gorm.DB, error) {
         return nil, err
     }
 
-	// Configurações de conexão
     sqlDB.SetMaxIdleConns(10)
     sqlDB.SetMaxOpenConns(100)
 

@@ -59,14 +59,7 @@ func (h *BurgerHandler) GetBurgers(c echo.Context) error {
 	var outputDTOs []*dto.Output
 
 	for _, burger := range burgers {
-		statusType, err := h.service.GetStatusTypeById(burger.StatusId)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{
-				"error": "erro ao processar dados dos pedidos",
-			})
-		}
-
-		outputDTO := dto.FromDomain(burger, statusType)
+		outputDTO := dto.FromDomain(burger, burger.Status.Tipo)
 		outputDTOs = append(outputDTOs, outputDTO)
 	}
 
@@ -96,14 +89,13 @@ func (h *BurgerHandler) UpdateStatusBurger(c echo.Context) error {
 
 	newDomainBurger, err := h.service.UpdateStatusBurger(id, body.Status)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, map[string]string {
+		return c.JSON(http.StatusInternalServerError, map[string]string {
 			"error": "não foi possível atualizar o pedido",
 		})
 	}
 
-	newStatus, err := h.service.GetStatusTypeById(newDomainBurger.StatusId)
-
-	output := dto.FromDomain(newDomainBurger, newStatus)
+	// Usar o Status que já foi carregado
+	output := dto.FromDomain(newDomainBurger, newDomainBurger.Status.Tipo)
 
 	return c.JSON(http.StatusOK, output)
 }
@@ -118,7 +110,8 @@ func (h *BurgerHandler) DeleteBurger(c echo.Context) error {
 		})
 	}
 
-	if err := h.service.DeleteBurgerById(id); err != nil {
+	err = h.service.DeleteBurgerById(id)
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"error": "Erro ao deletar o pedido",
 		})

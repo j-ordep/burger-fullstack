@@ -22,7 +22,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Erro ao conectar no banco:", err)
 	}
-	defer db.Close()
 
 	ingredientesRepo := repository.NewIngredientesRepository(db)
 	ingredientesService := service.NewIngredientesService(ingredientesRepo)

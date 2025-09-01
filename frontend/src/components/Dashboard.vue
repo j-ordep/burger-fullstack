@@ -24,7 +24,7 @@
         </div>
         <div>
           <select name="status" class="status" @change="updateBurger($event, burger.id)">
-            <option v-for="s in status" :key="s.id" :value="s.tipo" :selected="burger.status == s.tipo">
+            <option v-for="s in status" :key="s.id" :value="s.id" :selected="burger.status == s.tipo">
               {{ s.tipo }}
             </option>
           </select>
@@ -46,7 +46,6 @@ import Message from './Message.vue'
     data() {
       return {
         burgers: null,
-        burger_id: null,
         status: [],
         msg: null
       }
@@ -90,7 +89,7 @@ import Message from './Message.vue'
       },
       async updateBurger(event, id) {
 
-        const option = event.target.value;
+        const option = Number(event.target.value);
 
         const dataJson = JSON.stringify({status: option});
 
@@ -104,9 +103,6 @@ import Message from './Message.vue'
 
         this.msg = `Pedido Nº ${res.id} atualizado para ${res.status}`
         setTimeout(() => this.msg="", 3000);
-
-        console.log("Update status datajson" + dataJson)
-        console.log("Update res" + res)
 
       }
     },

@@ -57,6 +57,7 @@ export default {
       paes: null,
       carnes: null,
       opcionaisdata: null,
+      // status: [],
 
       // frontend(v-model) -> backend
       nome: null,
@@ -79,7 +80,6 @@ export default {
       this.opcionaisdata = data.opcionais
 
     },
-
     async createBurger(e) {
       e.preventDefault() // para a pagina não recarregar quando rodar o submit
 
@@ -88,7 +88,7 @@ export default {
         carne: this.carne,
         pao: this.pao,
         opcionais: Array.from(this.opcionais),
-        status: "Solicitado"
+        statusId: 1
       }
 
       // "envia para o backend"

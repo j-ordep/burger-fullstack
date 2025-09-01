@@ -101,7 +101,7 @@ import Message from './Message.vue'
 
         const res = await req.json()
 
-        this.msg = `Pedido Nº ${res.id} atualizado para ${res.statusId}`
+        this.msg = `Pedido Nº ${res.id} atualizado`
         setTimeout(() => this.msg="", 3000);
 
       }

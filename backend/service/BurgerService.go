@@ -29,14 +29,9 @@ func (s *BurgerService) GetBurgers() ([]*domain.Burger, error) {
 	return burgers, nil
 }
 
-func (s *BurgerService) UpdateStatusBurger(id int, status string) (*domain.Burger, error) {
+func (s *BurgerService) UpdateStatusBurger(id int, statusId int) (*domain.Burger, error) {
 
-	statusId, err := s.repo.GetStatusIdByName(status)
-	if err != nil {
-		return nil, err
-	}
-
-	err = s.repo.UpdateStatusBurger(id, statusId)
+	err := s.repo.UpdateStatusBurger(id, statusId)
 	if err != nil {
 		return nil, err
 	}

@@ -141,14 +141,12 @@ func (r *BurgerRepository) DeleteBurger(id int) error {
 		return err
 	}
 
-	// Agora checa se a tabela ficou vazia
 	var count int
 	err = r.db.QueryRow(`SELECT COUNT(*) FROM pedidos`).Scan(&count)
 	if err != nil {
 		return err
 	}
 
-	// Se não tem mais pedidos, reseta a sequence
 	if count == 0 {
 		_, err = r.db.Exec(`ALTER SEQUENCE pedidos_id_seq RESTART WITH 1`)
 		if err != nil {
@@ -157,18 +155,4 @@ func (r *BurgerRepository) DeleteBurger(id int) error {
 	}
 
 	return nil
-}
-
-// funções auxiliares
-
-func (r *BurgerRepository) GetStatusIdByName(statusName string) (int, error) {
-	var statusId int
-	err := r.db.QueryRow(`SELECT id FROM status WHERE tipo = $1`, statusName).Scan(&statusId)
-	return statusId, err
-}
-
-func (r *BurgerRepository) GetStatusTypeById(statusId int) (string, error) {
-	var statusType string
-	err := r.db.QueryRow(`SELECT tipo FROM status WHERE id = $1`, statusId).Scan(&statusType)
-	return statusType, err
 }

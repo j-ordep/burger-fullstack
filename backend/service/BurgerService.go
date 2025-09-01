@@ -30,13 +30,13 @@ func (s *BurgerService) GetBurgers() ([]*domain.Burger, error) {
 }
 
 func (s *BurgerService) UpdateStatusBurger(id int, statusId int) (*domain.Burger, error) {
-
-	burger, err := s.repo.GetBurgerById(id)
+	
+	err := s.repo.UpdateStatusBurger(id, statusId)
 	if err != nil {
 		return nil, err
 	}
-	
-	err = s.repo.UpdateStatusBurger(id, statusId)
+
+	burger, err := s.repo.GetBurgerById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -60,25 +60,4 @@ func (s *BurgerService) GetBurgerById(id int) (*domain.Burger, error) {
 	}
 
 	return burger, nil
-}
-
-// funções auxiliares
-
-
-func (s *BurgerService) GetStatusIdByName(status string) (int, error) {
-	statusId, err := s.repo.GetStatusIdByName(status)
-	if err != nil {
-		return 0, err
-	}
-
-	return statusId, nil
-}
-
-func (s *BurgerService) GetStatusTypeById(statusId int) (string, error) {
-	statustype, err := s.repo.GetStatusTypeById(statusId)
-	if err != nil {
-		return "", err
-	}
-
-	return statustype, nil
 }

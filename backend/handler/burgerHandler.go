@@ -28,15 +28,7 @@ func (h *BurgerHandler) SaveBurger(c echo.Context) error {
 		})
 	}
 
-	// o input (burgerDto) vem com status em fomato de string, logo passei essa func para buscar no db qual id do status (exemplo: id:1, tipo:"Solicitado")
-	statusId, err := h.service.GetStatusIdByName(burgerDto.Status)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"error": "status_id não encontrado",
-		})
-	}
-
-	burger := burgerDto.ToDomain(statusId)
+	burger := burgerDto.ToDomain()
 
 	burgerId, err := h.service.SaveBurger(burger)
 	if err != nil {
@@ -56,26 +48,19 @@ func (h *BurgerHandler) GetBurgers(c echo.Context) error {
 		})
 	}
 
-	var outputDTOs []*dto.Output
+	var outputs []*dto.Output
 
 	for _, burger := range burgers {
-		statusType, err := h.service.GetStatusTypeById(burger.StatusId)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{
-				"error": "erro ao processar dados dos pedidos",
-			})
-		}
-
-		outputDTO := dto.FromDomain(burger, statusType)
-		outputDTOs = append(outputDTOs, outputDTO)
+		output := dto.FromDomain(burger)
+		outputs = append(outputs, output)
 	}
 
-	return c.JSON(http.StatusOK, outputDTOs)
+	return c.JSON(http.StatusOK, outputs)
 }
 
 func (h *BurgerHandler) UpdateStatusBurger(c echo.Context) error {
 	idParam := c.Param("id")
-
+	
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
@@ -83,39 +68,25 @@ func (h *BurgerHandler) UpdateStatusBurger(c echo.Context) error {
 		})
 	}
 
-	var body struct {
-		Status string `json:"status"`
+	var status struct {
+		StatusId int `json:"status"`
 	}
-
-	err = c.Bind(&body)
+	
+	err = c.Bind(&status)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"error": "JSON inválido",
 		})
 	}
 
-	statusId, err := h.service.GetStatusIdByName(body.Status)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, map[string]string {
-			"error": "status id não encontrado",
-		})
-	}
-
-	newDomainBurger, err := h.service.UpdateStatusBurger(id, statusId)
+	newDomainBurger, err := h.service.UpdateStatusBurger(id, status.StatusId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, map[string]string {
 			"error": "não foi possível atualizar o pedido",
 		})
 	}
 
-	newStatus, err := h.service.GetStatusTypeById(newDomainBurger.StatusId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, map[string]string {
-			"error": "status não encontrado",
-		})
-	}
-
-	output := dto.FromDomain(newDomainBurger, newStatus)
+	output := dto.FromDomain(newDomainBurger)
 
 	return c.JSON(http.StatusOK, output)
 }

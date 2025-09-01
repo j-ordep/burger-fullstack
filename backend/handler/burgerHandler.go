@@ -94,7 +94,14 @@ func (h *BurgerHandler) UpdateStatusBurger(c echo.Context) error {
 		})
 	}
 
-	newDomainBurger, err := h.service.UpdateStatusBurger(id, body.Status)
+	statusId, err := h.service.GetStatusIdByName(body.Status)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]string {
+			"error": "status id não encontrado",
+		})
+	}
+
+	newDomainBurger, err := h.service.UpdateStatusBurger(id, statusId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, map[string]string {
 			"error": "não foi possível atualizar o pedido",
@@ -102,6 +109,11 @@ func (h *BurgerHandler) UpdateStatusBurger(c echo.Context) error {
 	}
 
 	newStatus, err := h.service.GetStatusTypeById(newDomainBurger.StatusId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]string {
+			"error": "status não encontrado",
+		})
+	}
 
 	output := dto.FromDomain(newDomainBurger, newStatus)
 

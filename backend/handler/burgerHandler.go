@@ -37,7 +37,9 @@ func (h *BurgerHandler) SaveBurger(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, burgerId)
+	return c.JSON(http.StatusOK, map[string]int {
+		"id": burgerId,
+	})
 }
 
 func (h *BurgerHandler) GetBurgers(c echo.Context) error {

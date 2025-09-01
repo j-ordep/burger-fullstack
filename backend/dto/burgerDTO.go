@@ -7,7 +7,7 @@ type Input struct {
 	Pao       string   `json:"pao"`
 	Carne     string   `json:"carne"`
 	Opcionais []string `json:"opcionais"`
-	StatusId  int      `json:"status"`
+	StatusId  int      `json:"statusId"`
 }
 
 type Output struct {
@@ -16,7 +16,7 @@ type Output struct {
     Pao       string   `json:"pao"`
     Carne     string   `json:"carne"`
     Opcionais []string `json:"opcionais"`
-	StatusId  int      `json:"status"`
+	StatusId  int      `json:"statusId"`
 }
 
 func (dto *Input) ToDomain() *domain.Burger {

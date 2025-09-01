@@ -6,5 +6,5 @@ type Burger struct {
     Pao       string   `json:"pao"`
     Carne     string   `json:"carne"`
     Opcionais []string `json:"opcionais"`
-    StatusId  int      `json:"status_id"`
+    StatusId  int      `json:"statusId"`
 }

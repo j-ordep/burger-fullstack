@@ -1,37 +1,9 @@
--- Active: 1755963471787@@localhost@5432@burger
-CREATE TABLE paes (
-    id SERIAL PRIMARY KEY,
-    tipo VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE carnes (
-    id SERIAL PRIMARY KEY,
-    tipo VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE status (
-    id SERIAL PRIMARY KEY,
-    tipo VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE opcionais (
-    id SERIAL PRIMARY KEY,
-    tipo VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE pedidos (
-    id SERIAL PRIMARY KEY,
-    nome TEXT NOT NULL,
-    pao TEXT NOT NULL,
-    carne TEXT NOT NULL,
-    status_id INT NOT NULL REFERENCES status(id)
-);
-
-CREATE TABLE burger_opcionais (
-    id SERIAL PRIMARY KEY,
-    pedidos_id INTEGER REFERENCES pedidos(id) ON DELETE CASCADE,
-    opcional TEXT NOT NULL
-);
+-- Active: 1756584010900@@localhost@5433@burger-gorm
+ALTER TABLE burger_opcionais
+ADD CONSTRAINT fk_burger_opcionais_pedidos
+FOREIGN KEY (pedidos_id)
+REFERENCES pedidos(id)
+ON DELETE CASCADE;
 
 INSERT INTO paes (id, tipo) VALUES
 (1, 'Italiano Branco'),

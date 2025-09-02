@@ -52,12 +52,3 @@ func (s *BurgerService) DeleteBurgerById(id int) (error) {
 
 	return nil
 }
-
-func (s *BurgerService) GetBurgerById(id int) (*domain.Burger, error) {
-	burger, err := s.repo.GetBurgerById(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return burger, nil
-}

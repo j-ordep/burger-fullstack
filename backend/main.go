@@ -18,21 +18,25 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := db.OpenConnection()
+	gormDB, err := db.OpenConnection()
 	if err != nil {
 		log.Fatal("Erro ao conectar no banco:", err)
 	}
-	defer db.Close()
 
-	ingredientesRepo := repository.NewIngredientesRepository(db)
+	err = db.RunMigrations(gormDB)
+	if err != nil {
+		log.Fatal("Erro ao executar migrações:", err)
+	}
+
+	ingredientesRepo := repository.NewIngredientesRepository(gormDB)
 	ingredientesService := service.NewIngredientesService(ingredientesRepo)
 	ingredientesHandler := handler.NewIngredientesHandler(ingredientesService)
 
-	statusRepo := repository.NewStatusRepository(db)
+	statusRepo := repository.NewStatusRepository(gormDB)
 	statusService := service.NewStatusService(statusRepo)
 	statusHandler := handler.NewStatusHandler(statusService)
 
-	burgerRepo := repository.NewBurgerRepository(db)
+	burgerRepo := repository.NewBurgerRepository(gormDB)
 	burgerService := service.NewBurgerService(burgerRepo)
 	burgerHandler := handler.NewBurgerHandler(burgerService)
 

@@ -1,24 +1,33 @@
 package db
 
 import (
-	"fmt"
-	"database/sql"
 	"backend-super-burger/config"
-	_ "github.com/lib/pq"
+	"fmt"
+	"log"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-func OpenConnection() (*sql.DB, error) {
+func OpenConnection() (*gorm.DB, error) {
 	conf := config.GetDB() 
 
-	sc := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", 
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", 
 		conf.Host, conf.Port, conf.User, conf.Password, conf.Database)
 
-	conn, err := sql.Open("postgres", sc)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	err = conn.Ping()
+	sqlDB, err := db.DB()
+    if err != nil {
+        return nil, err
+    }
 
-	return conn, err
+    sqlDB.SetMaxIdleConns(10)
+    sqlDB.SetMaxOpenConns(100)
+
+    log.Println("Conexão com banco de dados estabelecida com sucesso")
+    return db, nil
 }

@@ -3,7 +3,6 @@ package handler
 import (
 	"backend-super-burger/dto"
 	"backend-super-burger/service"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -109,7 +108,7 @@ func (h *BurgerHandler) DeleteBurger(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"message": fmt.Sprintf("Pedido com id %d deletado com sucesso", id),
+	return c.JSON(http.StatusOK, map[string]int{
+		"id": id,
 	})
 }

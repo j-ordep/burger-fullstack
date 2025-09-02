@@ -30,7 +30,7 @@ func (s *BurgerService) GetBurgers() ([]*domain.Burger, error) {
 }
 
 func (s *BurgerService) UpdateStatusBurger(id int, statusId int) (*domain.Burger, error) {
-
+	
 	err := s.repo.UpdateStatusBurger(id, statusId)
 	if err != nil {
 		return nil, err
@@ -51,15 +51,4 @@ func (s *BurgerService) DeleteBurgerById(id int) (error) {
 	}
 
 	return nil
-}
-
-// funções auxiliares
-
-func (s *BurgerService) GetStatusIdByName(status string) (int, error) {
-	statusId, err := s.repo.GetStatusIdByName(status)
-	if err != nil {
-		return 0, err
-	}
-
-	return statusId, nil
 }

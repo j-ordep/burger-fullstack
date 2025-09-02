@@ -16,5 +16,4 @@ type BurgerRepository interface {
 	GetBurgerById(id int) (*Burger, error)
 	UpdateStatusBurger(id int, statusId int) error
 	DeleteBurger(id int) error 
-	GetStatusIdByName(statusName string) (int, error)
 }

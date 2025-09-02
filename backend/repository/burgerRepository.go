@@ -113,14 +113,3 @@ func (r *BurgerRepository) DeleteBurger(id int) error {
 
 	return nil
 }
-
-// funções auxiliares
-
-func (r *BurgerRepository) GetStatusIdByName(statusName string) (int, error) {
-	var status domain.Status
-	err := r.db.Where("tipo = ?", statusName).First(&status).Error
-	if err != nil {
-		return 0, err
-	}
-	return status.Id, nil
-}

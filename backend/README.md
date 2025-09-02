@@ -4,7 +4,7 @@ Este diretório contém a API responsável pelo gerenciamento dos pedidos da ham
 
 ### Tecnologias Utilizadas
 - **Go (Golang):** Linguagem principal do backend, escolhida pela performance e simplicidade.
-- **GORM(na branch "gorm"):** ORM para Go, facilita o acesso e manipulação do banco de dados relacional. 
+- **GORM (na branch "gorm"):** ORM para Go, facilita o acesso e manipulação do banco de dados relacional. 
 - **Docker & Docker Compose:** Orquestração de serviços e ambiente de desenvolvimento.
 - **Banco de Dados:** Configurável via `config.toml` e `docker-compose.yml` (ex: PostgreSQL, MySQL).
 

@@ -15,7 +15,7 @@ O sistema foi desenvolvido com foco em organização, escalabilidade e facilidad
 
 ### Backend
 - **Go (Golang):** Linguagem principal do backend.
-- **GORM:** ORM para manipulação do banco de dados (na branch "gorm").
+- **GORM (na branch "gorm"):** ORM para manipulação do banco de dados.
 - **Docker & Docker Compose:** Orquestração de serviços e ambiente de desenvolvimento.
 - **Banco de Dados:** Configurável (ex: PostgreSQL, MySQL).
 
